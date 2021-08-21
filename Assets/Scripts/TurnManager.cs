@@ -26,7 +26,7 @@ public class TurnManager : MonoBehaviour
         {
             case states.start:
                 gameState = states.crossTurn;
-                crossPlayer.Act();
+                crossPlayer.StartCoroutine(crossPlayer.Act());
                 break;
 
             case states.crossTurn:
@@ -40,7 +40,7 @@ public class TurnManager : MonoBehaviour
                 else
                 {
                     gameState = states.circleTurn;
-                    circlePlayer.Act();
+                    circlePlayer.StartCoroutine(circlePlayer.Act());
                     break;
                 }
 
@@ -56,7 +56,7 @@ public class TurnManager : MonoBehaviour
                 else
                 {
                     gameState = states.crossTurn;
-                    crossPlayer.Act();
+                    crossPlayer.StartCoroutine(crossPlayer.Act());
                     break;
                 }
 

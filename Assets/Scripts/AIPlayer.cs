@@ -10,6 +10,8 @@ public class AIPlayer : Player
     // Бот не просчитывает ходы наперед, лишь выбирает лучший на данном ходу.
     public override IEnumerator Act()
     {
+        Debug.Log("Ход компьютера");
+
         yield return new WaitForSeconds(1);
 
         // int[,] tilesRating = new int[fieldSize, fieldSize];

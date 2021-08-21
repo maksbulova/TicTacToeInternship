@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static TurnManager;
 
 public class General : MonoBehaviour
 {
     public static General general;
 
     public Tilemap figureTileMap;
-    public TileBase CircleTile, CrossTile;
+    public TileBase circleTile, crossTile;
 
     public const int fieldSize = 3;
     public const int winAmount = 3;
 
+    [HideInInspector]
     // Набор всех направлений для проверки рядов фигур.
     public Vector3Int[] directions = {Vector3Int.up, Vector3Int.up + Vector3Int.right,
         Vector3Int.right, Vector3Int.right + Vector3Int.down,
@@ -42,12 +42,11 @@ public class General : MonoBehaviour
         TileBase choosenTile = general.figureTileMap.GetTile(cellPosition);
         figure figure;
 
-        // Switch case тут не срабтает.
-        if (choosenTile == general.CircleTile)
+        if (choosenTile == general.circleTile)
         {
             figure = figure.circle;
         }
-        else if (choosenTile == general.CrossTile)
+        else if (choosenTile == general.crossTile)
         {
             figure = figure.cross;
         }
@@ -67,10 +66,10 @@ public class General : MonoBehaviour
         switch (figure)
         {
             case figure.cross:
-                newTile = general.CrossTile;
+                newTile = general.crossTile;
                 break;
             case figure.circle:
-                newTile = general.CircleTile;
+                newTile = general.circleTile;
                 break;
             case figure.empty:
                 return;

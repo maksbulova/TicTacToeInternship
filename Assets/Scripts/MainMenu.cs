@@ -6,22 +6,30 @@ using static General;
 
 public class MainMenu : MonoBehaviour
 {
+
+    public Player humanPlayer, aiPlayer;
     public Tilemap backgroundTilemap;
     public TileBase backgroundTile;
     public GameObject menuUI;
 
     public void StartCross()
     {
-        TurnManager.crossPlayer = new HumanPlayer { playerFigure = figure.cross };
-        TurnManager.circlePlayer = new AIPlayer { playerFigure = figure.circle };
+        TurnManager.crossPlayer = humanPlayer;
+        humanPlayer.playerFigure = figure.cross;
+
+        TurnManager.circlePlayer = aiPlayer;
+        aiPlayer.playerFigure = figure.circle;
 
         StartGame();
     }
 
     public void StartCircle()
     {
-        TurnManager.crossPlayer = new AIPlayer { playerFigure = figure.cross };
-        TurnManager.circlePlayer = new HumanPlayer { playerFigure = figure.circle };
+        TurnManager.crossPlayer = aiPlayer;
+        aiPlayer.playerFigure = figure.cross;
+
+        TurnManager.circlePlayer = humanPlayer;
+        humanPlayer.playerFigure = figure.circle;
 
         StartGame();
     }
@@ -45,6 +53,8 @@ public class MainMenu : MonoBehaviour
             tilePos.x = 0;
             tilePos += Vector3Int.down;
         }
+
+        Debug.Log("Начало раунда");
 
         TurnManager.NextTurn();
     }
