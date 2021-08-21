@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 284613c45ddea3a4d9df08ed4377d199
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - backgroundTilemap: {instanceID: 0}
+  - backgroundTile: {fileID: 11400000, guid: 921d091036fb07441a599bad47be29ab, type: 2}
+  - menuUI: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
