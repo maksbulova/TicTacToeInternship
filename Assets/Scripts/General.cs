@@ -62,6 +62,7 @@ public class General : MonoBehaviour
     public static void SetFigure(figure figure, Vector3Int cellPosition)
     {
         TileBase newTile = null;
+        cellPosition.z = 0;
 
         switch (figure)
         {
@@ -117,16 +118,25 @@ public class General : MonoBehaviour
         figure comparedFigure = CheckFigure(origin);
         figure newFigure;
 
-        do
+        if (comparedFigure == figure.empty)
         {
-            origin += direction;
-            newFigure = CheckFigure(origin);
-            if (newFigure == comparedFigure)
+            return 0;
+        }
+        else
+        {
+            do
             {
-                amount++;
-            }
-        } while (newFigure == comparedFigure);
+                origin += direction;
+                newFigure = CheckFigure(origin);
+                if (newFigure == comparedFigure)
+                {
+                    amount++;
+                }
+            } while (newFigure == comparedFigure);
 
-        return amount;
+            return amount;
+
+        }
+
     }
 }

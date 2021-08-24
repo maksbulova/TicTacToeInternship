@@ -21,22 +21,18 @@ public class AIPlayer : Player
         List<Vector3Int> maxRatedTiles = new List<Vector3Int>();
         int maxRating = 0;
 
-
         for (int i = 0; i < fieldSize; i++)
         {
             for (int j = 0; j < fieldSize; j++)
             {
                 int rating = 0;
-                if (CheckFigure(tilePos) != figure.empty)
+                if (CheckFigure(tilePos) == figure.empty)
                 {
-                    // tilesRating[i, j] = 0;
-                }
-                else
-                {
-                    
+
                     foreach (Vector3Int direction in general.directions)
                     {
-                        rating += CountRow(tilePos, direction)^2;
+                        // rating +=  (int) Mathf.Pow(CountRow(tilePos + direction, direction), 2);
+                        rating += CountRow(tilePos + direction, direction);
                     }
                     // tilesRating[i, j] = rating;
 
@@ -44,13 +40,12 @@ public class AIPlayer : Player
                     {
                         maxRating = rating;
                         maxRatedTiles.Clear();
-                        maxRatedTiles.Add(new Vector3Int(i, j, 0));
+                        maxRatedTiles.Add(new Vector3Int(i, -j, 0));
                     }
                     else if (rating == maxRating)
                     {
-                        maxRatedTiles.Add(new Vector3Int(i, j, 0));
+                        maxRatedTiles.Add(new Vector3Int(i, -j, 0));
                     }
-
                 }
 
                 tilePos += Vector3Int.right;
@@ -64,6 +59,10 @@ public class AIPlayer : Player
         Vector3Int choosenTile = maxRatedTiles[choosenIndex];
 
         SetFigure(playerFigure, choosenTile);
+
+        Debug.Log(maxRating);
+        Debug.Log(choosenTile);
+
 
         TurnManager.NextTurn();
     }

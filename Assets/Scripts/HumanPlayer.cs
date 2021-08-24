@@ -20,6 +20,7 @@ public class HumanPlayer : Player
             {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int cellPosition = general.figureTileMap.WorldToCell(pos);
+                cellPosition.z = 0;
                 figure tileOnClick = CheckFigure(cellPosition);
 
                 if (tileOnClick == figure.empty &&

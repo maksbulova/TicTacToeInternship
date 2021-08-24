@@ -21,7 +21,7 @@ public class TurnManager : MonoBehaviour
 
     public static void NextTurn()
     {
-        
+
         switch (gameState)
         {
             case states.start:
