@@ -98,6 +98,8 @@ public class General : MonoBehaviour
 
     public static bool CheckWinCondition(out Figure winFigure)
     {
+        // Ничья если ходов не осталось.
+        bool emptyLeft = false;
 
         for (int i = 0; i < fieldSize; i++)
         {
@@ -105,7 +107,11 @@ public class General : MonoBehaviour
             {
                 Figure figure = CheckFigure((i, j));
 
-                if (figure != Figure.empty)
+                if (figure == Figure.empty)
+                {
+                    emptyLeft = true;
+                }
+                else
                 {
                     // Проверка горизонтальной линии.
                     for (int k = 1; k < winAmount; k++)
@@ -204,7 +210,17 @@ public class General : MonoBehaviour
         }
 
         winFigure = Figure.empty;
-        return false;
+
+        if (emptyLeft)
+        {
+            return false;
+        }
+        else
+        {
+            // Ничья.
+            return true;
+        }
+
     }
 
 }

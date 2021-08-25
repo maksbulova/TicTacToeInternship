@@ -7,7 +7,6 @@ using static General;
 public class AIPlayer : Player
 {
 
-    // Бот не просчитывает ходы наперед, лишь выбирает лучший на данном ходу.
     public override IEnumerator Act()
     {
         Debug.Log("Ход компьютера");
@@ -16,7 +15,8 @@ public class AIPlayer : Player
         Figure opponentFigure = (playerFigure == Figure.circle ? Figure.cross : Figure.circle);
 
         List<(int, int)> aviableTurns = new List<(int, int)>();
-        (int, int) choosenTile;
+        List<(int, int)> criticalTurn = new List<(int, int)>();
+        (int, int) choosenTurn;
 
         for (int i = 0; i < fieldSize; i++)
         {
@@ -27,14 +27,13 @@ public class AIPlayer : Player
                     if (SuggestTurn(playerFigure, (i, j)))
                     {
                         // Победный ход.
-                        choosenTile = (i, j);
+                        choosenTurn = (i, j);
                         goto setTile;
                     }
                     else if (SuggestTurn(opponentFigure, (i, j)))
                     {
                         // Ход предотвращающий победу соперника.
-                        choosenTile = (i, j);
-                        goto setTile;
+                        criticalTurn.Add((i, j));
                     }
                     else
                     {
@@ -45,12 +44,20 @@ public class AIPlayer : Player
             }
         }
 
-        int choosenIndex = Random.Range(0, aviableTurns.Count);
-        choosenTile = aviableTurns[choosenIndex];
+        if (criticalTurn.Count > 0)
+        {
+            int choosenIndex = Random.Range(0, criticalTurn.Count);
+            choosenTurn = criticalTurn[choosenIndex];
+        }
+        else
+        {
+            int choosenIndex = Random.Range(0, aviableTurns.Count);
+            choosenTurn = aviableTurns[choosenIndex];
+        }
 
     setTile:
 
-        SetFigure(playerFigure, choosenTile);
+        SetFigure(playerFigure, choosenTurn);
 
         TurnManager.NextTurn();
     }

@@ -13,7 +13,7 @@ public class HumanPlayer : Player
     {
         Debug.Log("Ход игрока");
 
-        states currentTurn = gameState;
+        States currentTurn = gameState;
         while (gameState == currentTurn)
         {
             if (Input.GetMouseButtonDown(0))

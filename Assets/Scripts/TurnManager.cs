@@ -8,16 +8,16 @@ public class TurnManager : MonoBehaviour
 {
     public static Player crossPlayer, circlePlayer;
 
-    public enum states
+    public enum States
     {
         start, crossTurn, circleTurn, finish
     }
 
-    public static states gameState;
+    public static States gameState;
 
     private void Start()
     {
-        gameState = states.start;
+        gameState = States.start;
     }
 
     public static void NextTurn()
@@ -25,7 +25,7 @@ public class TurnManager : MonoBehaviour
 
         if (General.CheckWinCondition(out Figure winnerFigure))
         {
-            gameState = states.finish;
+            gameState = States.finish;
 
             Debug.Log($"Победа {winnerFigure}");
         }
@@ -33,22 +33,22 @@ public class TurnManager : MonoBehaviour
 
         switch (gameState)
         {
-            case states.start:
-                gameState = states.crossTurn;
+            case States.start:
+                gameState = States.crossTurn;
                 crossPlayer.StartCoroutine(crossPlayer.Act());
                 break;
 
-            case states.crossTurn:
-                gameState = states.circleTurn;
+            case States.crossTurn:
+                gameState = States.circleTurn;
                 circlePlayer.StartCoroutine(circlePlayer.Act());
                 break;
 
-            case states.circleTurn:
-                gameState = states.crossTurn;
+            case States.circleTurn:
+                gameState = States.crossTurn;
                 crossPlayer.StartCoroutine(crossPlayer.Act());
                 break;
 
-            case states.finish:
+            case States.finish:
                 break;
 
             default:
