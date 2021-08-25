@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 public class General : MonoBehaviour
 {
     public static General general;
+    public MainMenu mainMenu;
 
     public Tilemap figureTileMap;
     public TileBase circleTile, crossTile;

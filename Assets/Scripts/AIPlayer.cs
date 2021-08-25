@@ -59,7 +59,7 @@ public class AIPlayer : Player
 
         SetFigure(playerFigure, choosenTurn);
 
-        TurnManager.NextTurn();
+        TurnManager.MakeNextTurn();
     }
 
     private bool SuggestTurn(Figure figure, (int, int) tilePosition)

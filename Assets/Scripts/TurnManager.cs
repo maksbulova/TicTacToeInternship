@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using static General;
 
-public class TurnManager : MonoBehaviour
+public class TurnManager
 {
     public static Player crossPlayer, circlePlayer;
+    
 
     public enum States
     {
@@ -15,18 +15,13 @@ public class TurnManager : MonoBehaviour
 
     public static States gameState;
 
-    private void Start()
-    {
-        gameState = States.start;
-    }
 
-    public static void NextTurn()
+    public static void MakeNextTurn()
     {
 
         if (General.CheckWinCondition(out Figure winnerFigure))
         {
             gameState = States.finish;
-
             Debug.Log($"Победа {winnerFigure}");
         }
 
@@ -49,6 +44,7 @@ public class TurnManager : MonoBehaviour
                 break;
 
             case States.finish:
+                General.general.mainMenu.StartCoroutine(General.general.mainMenu.ShowGameOverScreen(winnerFigure));
                 break;
 
             default:

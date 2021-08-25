@@ -29,7 +29,7 @@ public class HumanPlayer : Player
                 {
 
                     SetFigure(playerFigure, cellPosition);
-                    NextTurn();
+                    MakeNextTurn();
                 }
             }
 
