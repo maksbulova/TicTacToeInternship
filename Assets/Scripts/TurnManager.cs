@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static General;
 
 public class TurnManager : MonoBehaviour
 {
@@ -22,6 +23,14 @@ public class TurnManager : MonoBehaviour
     public static void NextTurn()
     {
 
+        if (General.CheckWinCondition(out Figure winnerFigure))
+        {
+            gameState = states.finish;
+
+            Debug.Log($"Победа {winnerFigure}");
+        }
+
+
         switch (gameState)
         {
             case states.start:
@@ -30,36 +39,17 @@ public class TurnManager : MonoBehaviour
                 break;
 
             case states.crossTurn:
-                if (General.CheckWinCondition())
-                {
-                    gameState = states.finish;
-                    Debug.Log("Победа крестика");
-                    // Победа крестика.
-                    break;
-                }
-                else
-                {
-                    gameState = states.circleTurn;
-                    circlePlayer.StartCoroutine(circlePlayer.Act());
-                    break;
-                }
-
+                gameState = states.circleTurn;
+                circlePlayer.StartCoroutine(circlePlayer.Act());
+                break;
 
             case states.circleTurn:
-                if (General.CheckWinCondition())
-                {
-                    gameState = states.finish;
-                    Debug.Log("Победа нолика");
-                    // Победа нолика.
-                    break;
-                }
-                else
-                {
-                    gameState = states.crossTurn;
-                    crossPlayer.StartCoroutine(crossPlayer.Act());
-                    break;
-                }
+                gameState = states.crossTurn;
+                crossPlayer.StartCoroutine(crossPlayer.Act());
+                break;
 
+            case states.finish:
+                break;
 
             default:
                 break;

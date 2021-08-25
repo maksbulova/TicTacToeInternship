@@ -13,57 +13,54 @@ public class AIPlayer : Player
         Debug.Log("Ход компьютера");
 
         yield return new WaitForSeconds(1);
+        Figure opponentFigure = (playerFigure == Figure.circle ? Figure.cross : Figure.circle);
 
-        // int[,] tilesRating = new int[fieldSize, fieldSize];
-        Vector3Int tilePos = new Vector3Int(0, 0, 0);
-
-        // Перечень самых выгодных ходов.
-        List<Vector3Int> maxRatedTiles = new List<Vector3Int>();
-        int maxRating = 0;
+        List<(int, int)> aviableTurns = new List<(int, int)>();
+        (int, int) choosenTile;
 
         for (int i = 0; i < fieldSize; i++)
         {
             for (int j = 0; j < fieldSize; j++)
             {
-                int rating = 0;
-                if (CheckFigure(tilePos) == figure.empty)
+                if (CheckFigure((i, j)) == Figure.empty)
                 {
-
-                    foreach (Vector3Int direction in general.directions)
+                    if (SuggestTurn(playerFigure, (i, j)))
                     {
-                        // rating +=  (int) Mathf.Pow(CountRow(tilePos + direction, direction), 2);
-                        rating += CountRow(tilePos + direction, direction);
+                        // Победный ход.
+                        choosenTile = (i, j);
+                        goto setTile;
                     }
-                    // tilesRating[i, j] = rating;
-
-                    if (rating > maxRating)
+                    else if (SuggestTurn(opponentFigure, (i, j)))
                     {
-                        maxRating = rating;
-                        maxRatedTiles.Clear();
-                        maxRatedTiles.Add(new Vector3Int(i, -j, 0));
+                        // Ход предотвращающий победу соперника.
+                        choosenTile = (i, j);
+                        goto setTile;
                     }
-                    else if (rating == maxRating)
+                    else
                     {
-                        maxRatedTiles.Add(new Vector3Int(i, -j, 0));
+                        // Случайный ход из доступных.
+                        aviableTurns.Add((i, j));
                     }
                 }
-
-                tilePos += Vector3Int.right;
             }
-
-            tilePos.x = 0;
-            tilePos += Vector3Int.down;
         }
 
-        int choosenIndex = Random.Range(0, maxRatedTiles.Count);
-        Vector3Int choosenTile = maxRatedTiles[choosenIndex];
+        int choosenIndex = Random.Range(0, aviableTurns.Count);
+        choosenTile = aviableTurns[choosenIndex];
+
+    setTile:
 
         SetFigure(playerFigure, choosenTile);
 
-        Debug.Log(maxRating);
-        Debug.Log(choosenTile);
-
-
         TurnManager.NextTurn();
+    }
+
+    private bool SuggestTurn(Figure figure, (int, int) tilePosition)
+    {
+        SetFigure(figure, tilePosition);
+        bool answer = CheckWinCondition(out _);
+        SetFigure(Figure.empty, tilePosition);
+
+        return answer;
     }
 }

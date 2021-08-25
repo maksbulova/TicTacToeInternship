@@ -13,14 +13,8 @@ public class General : MonoBehaviour
     public const int fieldSize = 3;
     public const int winAmount = 3;
 
-    [HideInInspector]
-    // Набор всех направлений для проверки рядов фигур.
-    public Vector3Int[] directions = {Vector3Int.up, Vector3Int.up + Vector3Int.right,
-        Vector3Int.right, Vector3Int.right + Vector3Int.down,
-        Vector3Int.down, Vector3Int.down + Vector3Int.left,
-        Vector3Int.left, Vector3Int.left + Vector3Int.up };
-
-    public enum figure { cross, circle, empty }
+    public enum Figure { cross, circle, empty }
+    public static Figure[,] gameField;
 
     private void Awake()
     {
@@ -37,106 +31,180 @@ public class General : MonoBehaviour
         }
     }
 
-    public static figure CheckFigure(Vector3Int cellPosition)
+    private static (int, int) GetTileIndex(Vector3Int tilePosition)
     {
-        TileBase choosenTile = general.figureTileMap.GetTile(cellPosition);
-        figure figure;
-
-        if (choosenTile == general.circleTile)
-        {
-            figure = figure.circle;
-        }
-        else if (choosenTile == general.crossTile)
-        {
-            figure = figure.cross;
-        }
-        else
-        {
-            figure = figure.empty;
-        }
-
-        return figure;
+        return (tilePosition.x, tilePosition.y);
     }
 
-
-    public static void SetFigure(figure figure, Vector3Int cellPosition)
+    public static Figure CheckFigure(Vector3Int tilePosition)
     {
+        (int, int) tileIndex = GetTileIndex(tilePosition);
+        return CheckFigure(tileIndex);
+    }
+
+    public static Figure CheckFigure((int, int) tileIndex)
+    {
+        return gameField[tileIndex.Item1, tileIndex.Item2];
+    }
+
+    public static void SetFigure(Figure figure, Vector3Int tilePosition)
+    {
+        (int, int) tileIndex = GetTileIndex(tilePosition);
+
+        gameField[tileIndex.Item1, tileIndex.Item2] = figure;
+
         TileBase newTile = null;
-        cellPosition.z = 0;
+        tilePosition.z = 0;
 
         switch (figure)
         {
-            case figure.cross:
+            case Figure.cross:
                 newTile = general.crossTile;
                 break;
-            case figure.circle:
+            case Figure.circle:
                 newTile = general.circleTile;
                 break;
-            case figure.empty:
-                return;
+            case Figure.empty:
+                newTile = null;
+                break;
         }
 
-        general.figureTileMap.SetTile(cellPosition, newTile);
+        general.figureTileMap.SetTile(tilePosition, newTile);
     }
 
-    public static bool CheckWinCondition()
+    public static void SetFigure(Figure figure, (int, int) tileIndex)
     {
+        Vector3Int tilePosition = new Vector3Int(tileIndex.Item1, tileIndex.Item2, 0);
+        gameField[tileIndex.Item1, tileIndex.Item2] = figure;
 
-        Vector3Int tilePos = new Vector3Int(0, 0, 0);
+        TileBase newTile = null;
+
+        switch (figure)
+        {
+            case Figure.cross:
+                newTile = general.crossTile;
+                break;
+            case Figure.circle:
+                newTile = general.circleTile;
+                break;
+            case Figure.empty:
+                newTile = null;
+                break;
+        }
+
+        general.figureTileMap.SetTile(tilePosition, newTile);
+    }
+
+
+    public static bool CheckWinCondition(out Figure winFigure)
+    {
 
         for (int i = 0; i < fieldSize; i++)
         {
             for (int j = 0; j < fieldSize; j++)
             {
-                figure figure = CheckFigure(tilePos);
+                Figure figure = CheckFigure((i, j));
 
-                if (figure != figure.empty)
+                if (figure != Figure.empty)
                 {
-                    foreach (Vector3Int direction in general.directions)
+                    // Проверка горизонтальной линии.
+                    for (int k = 1; k < winAmount; k++)
                     {
-                        if (CountRow(tilePos, direction) == winAmount)
+                        int newJPos = j + k;
+
+                        if (newJPos >= 0 && newJPos < fieldSize)
                         {
-                            return true;
+                            if (CheckFigure((i, newJPos)) == figure)
+                            {
+                                if (k + 1 == winAmount)
+                                {
+                                    winFigure = figure;
+                                    return true;
+                                }
+
+                                continue;
+                            }
                         }
+
+                        break;
                     }
+
+                    // Проверка вертикаьной линии.
+                    for (int k = 1; k < winAmount; k++)
+                    {
+                        int newIPos = i + k;
+
+                        if (newIPos >= 0 && newIPos < fieldSize)
+                        {
+                            if (CheckFigure((newIPos, j)) == figure)
+                            {
+                                if (k + 1 == winAmount)
+                                {
+                                    winFigure = figure;
+                                    return true;
+                                }
+
+                                continue;
+                            }
+                        }
+
+                        break;
+                    }
+
+                    // Проверка диагональной линии слева на право.
+                    for (int k = 1; k < winAmount; k++)
+                    {
+                        int newIPos = i + k;
+                        int newJPos = j + k;
+
+                        if (newIPos >= 0 && newIPos < fieldSize &&
+                            newJPos >= 0 && newJPos < fieldSize)
+                        {
+                            if (CheckFigure((newIPos, newJPos)) == figure)
+                            {
+                                if (k + 1 == winAmount)
+                                {
+                                    winFigure = figure;
+                                    return true;
+                                }
+
+                                continue;
+                            }
+                        }
+
+                        break;
+                    }
+
+                    // Проверка диагональной линии справа на лево.
+                    for (int k = 1; k < winAmount; k++)
+                    {
+                        int newIPos = i + k;
+                        int newJPos = j - k;
+
+                        if (newIPos >= 0 && newIPos < fieldSize &&
+                            newJPos >= 0 && newJPos < fieldSize)
+                        {
+                            if (CheckFigure((newIPos, newJPos)) == figure)
+                            {
+                                if (k + 1 == winAmount)
+                                {
+                                    winFigure = figure;
+                                    return true;
+                                }
+
+                                continue;
+                            }
+                        }
+
+                        break;
+                    }
+
                 }
-
-                tilePos += Vector3Int.right;
             }
-
-            tilePos.x = 0;
-            tilePos += Vector3Int.down;
         }
 
+        winFigure = Figure.empty;
         return false;
     }
 
-    // Возвращает количество элементов в ряд.
-    public static int CountRow(Vector3Int origin, Vector3Int direction)
-    {
-        int amount = 0;
-        figure comparedFigure = CheckFigure(origin);
-        figure newFigure;
-
-        if (comparedFigure == figure.empty)
-        {
-            return 0;
-        }
-        else
-        {
-            do
-            {
-                origin += direction;
-                newFigure = CheckFigure(origin);
-                if (newFigure == comparedFigure)
-                {
-                    amount++;
-                }
-            } while (newFigure == comparedFigure);
-
-            return amount;
-
-        }
-
-    }
 }

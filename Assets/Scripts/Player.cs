@@ -8,7 +8,7 @@ using static General;
 public abstract class Player : MonoBehaviour
 {
     [HideInInspector]
-    public figure playerFigure;
+    public Figure playerFigure;
 
     public abstract IEnumerator Act();
 

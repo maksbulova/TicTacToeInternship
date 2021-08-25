@@ -15,10 +15,10 @@ public class MainMenu : MonoBehaviour
     public void StartCross()
     {
         TurnManager.crossPlayer = humanPlayer;
-        humanPlayer.playerFigure = figure.cross;
+        humanPlayer.playerFigure = Figure.cross;
 
         TurnManager.circlePlayer = aiPlayer;
-        aiPlayer.playerFigure = figure.circle;
+        aiPlayer.playerFigure = Figure.circle;
 
         StartGame();
     }
@@ -26,10 +26,10 @@ public class MainMenu : MonoBehaviour
     public void StartCircle()
     {
         TurnManager.crossPlayer = aiPlayer;
-        aiPlayer.playerFigure = figure.cross;
+        aiPlayer.playerFigure = Figure.cross;
 
         TurnManager.circlePlayer = humanPlayer;
-        humanPlayer.playerFigure = figure.circle;
+        humanPlayer.playerFigure = Figure.circle;
 
         StartGame();
     }
@@ -39,19 +39,21 @@ public class MainMenu : MonoBehaviour
         menuUI.SetActive(false);
 
         // Генерация поля.
+        General.gameField = new Figure[fieldSize, fieldSize];
         Vector3Int tilePos = new Vector3Int(0, 0, 0);
 
         for (int i = 0; i < fieldSize; i++)
         {
             for (int j = 0; j < fieldSize; j++)
             {
+                gameField[i, j] = Figure.empty;
                 backgroundTilemap.SetTile(tilePos, backgroundTile);
 
                 tilePos += Vector3Int.right;
             }
 
             tilePos.x = 0;
-            tilePos += Vector3Int.down;
+            tilePos += Vector3Int.up;
         }
 
         Debug.Log("Начало раунда");

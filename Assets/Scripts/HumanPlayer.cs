@@ -21,11 +21,11 @@ public class HumanPlayer : Player
                 Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int cellPosition = general.figureTileMap.WorldToCell(pos);
                 cellPosition.z = 0;
-                figure tileOnClick = CheckFigure(cellPosition);
+                Figure tileOnClick = CheckFigure(cellPosition);
 
-                if (tileOnClick == figure.empty &&
+                if (tileOnClick == Figure.empty &&
                    (cellPosition.x >= 0 && cellPosition.x <= fieldSize) &&
-                   (cellPosition.y <= 0 && cellPosition.y >= -fieldSize))
+                   (cellPosition.y >= 0 && cellPosition.y <= fieldSize))
                 {
 
                     SetFigure(playerFigure, cellPosition);
