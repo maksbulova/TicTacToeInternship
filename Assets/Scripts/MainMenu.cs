@@ -8,11 +8,12 @@ using static General;
 public class MainMenu : MonoBehaviour
 {
 
-    public Player player1, player2;
-    public Tilemap backgroundTilemap;
-    public TileBase backgroundTile;
-    public GameObject menuScreen, resultScreen;
-    public Text resultText;
+    [SerializeField] private Player player1, player2;
+    [SerializeField] private Tilemap backgroundTilemap;
+    [SerializeField] private TileBase backgroundTile;
+    [SerializeField] private GameObject menuScreen, resultScreen;
+    [SerializeField] private Text resultText;
+    [SerializeField] private Slider fieldSizeSlider;
 
     private void Start()
     {
@@ -122,5 +123,24 @@ public class MainMenu : MonoBehaviour
         resultScreen.SetActive(false);
         menuScreen.SetActive(true);
         
+    }
+
+    public void SetFieldSize()
+    {
+        switch (fieldSizeSlider.value)
+        {
+            case 0:
+                
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+
+            default:
+                break;
+        }
     }
 }

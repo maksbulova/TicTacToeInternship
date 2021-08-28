@@ -11,7 +11,7 @@ public class General : MonoBehaviour
     public Tilemap figureTileMap;
     public TileBase circleTile, crossTile;
 
-    public const int fieldSize = 3;
+    public static int fieldSize = 3;
     public const int winAmount = 3;
 
     public enum Figure { cross, circle, empty }
