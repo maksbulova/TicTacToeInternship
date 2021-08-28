@@ -5,19 +5,18 @@ using static General;
 public class HumanPlayer : Player
 {
 
-    // Обработка действий игрока в его ход.
+    // Handling user input in his turn only.
     public override IEnumerator Act()
     {
-        Debug.Log("Ход игрока");
-
         TurnManager.States currentTurn = TurnManager.gameState;
         while (TurnManager.gameState == currentTurn)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3Int cellPosition = general.figureTileMap.WorldToCell(pos);
-                cellPosition.z = 0;
+                Vector3Int clickPosition = general.figureTileMap.WorldToCell(pos);
+                Vector2Int cellPosition = new Vector2Int(clickPosition.x, clickPosition.y);
+
                 Figure tileOnClick = CheckFigure(cellPosition);
 
                 if (tileOnClick == Figure.empty &&

@@ -20,7 +20,7 @@ public class MainMenu : MonoBehaviour
         resultScreen.SetActive(false);
     }
 
-    // Функция вызывается через интерфейс выбора фигуры.
+    // Function called from user interface.
     public void StartCross()
     {
         TurnManager.crossPlayer = player1;
@@ -51,7 +51,6 @@ public class MainMenu : MonoBehaviour
 
         GenerateField(fieldSize);
 
-        Debug.Log("Начало раунда");
         turnManager.MakeNextTurn();
     }
 

@@ -13,17 +13,16 @@ public class General : MonoBehaviour
     public static Figure[,] gameField;
 
 
-    public static Figure CheckFigure(Vector3Int tilePosition)
+    public static Figure CheckFigure(Vector2Int tilePosition)
     {
         return gameField[tilePosition.x, tilePosition.y];
     }
 
-    public void SetFigure(Figure figure, Vector3Int tilePosition)
+    public void SetFigure(Figure figure, Vector2Int tilePosition)
     {
         gameField[tilePosition.x, tilePosition.y] = figure;
 
         TileBase newTile = null;
-        tilePosition.z = 0;
 
         switch (figure)
         {
@@ -38,43 +37,21 @@ public class General : MonoBehaviour
                 break;
         }
 
-        figureTileMap.SetTile(tilePosition, newTile);
-    }
-
-    public void SetFigure(Figure figure, (int, int) tileIndex)
-    {
-        Vector3Int tilePosition = new Vector3Int(tileIndex.Item1, tileIndex.Item2, 0);
-        gameField[tileIndex.Item1, tileIndex.Item2] = figure;
-
-        TileBase newTile = null;
-
-        switch (figure)
-        {
-            case Figure.cross:
-                newTile = crossTile;
-                break;
-            case Figure.circle:
-                newTile = circleTile;
-                break;
-            case Figure.empty:
-                newTile = null;
-                break;
-        }
-
-        figureTileMap.SetTile(tilePosition, newTile);
+        Vector3Int tilePositionV3 = new Vector3Int(tilePosition.x, tilePosition.y, 0);
+        figureTileMap.SetTile(tilePositionV3, newTile);
     }
 
 
     public static bool CheckWinCondition(out Figure winFigure)
     {
-        // Ничья если ходов не осталось.
+        // Draw if no turns left.
         bool emptyLeft = false;
 
         for (int i = 0; i < fieldSize; i++)
         {
             for (int j = 0; j < fieldSize; j++)
             {
-                Vector3Int tilePosition = new Vector3Int(i, j, 0);
+                Vector2Int tilePosition = new Vector2Int(i, j);
                 Figure figure = CheckFigure(tilePosition);
 
                 if (figure == Figure.empty)
@@ -83,14 +60,14 @@ public class General : MonoBehaviour
                 }
                 else
                 {
-                    // Проверка горизонтальной линии.
+                    // Check horizontal line.
                     for (int k = 1; k < winAmount; k++)
                     {
                         int newJPos = j + k;
 
                         if (newJPos >= 0 && newJPos < fieldSize)
                         {
-                            Vector3Int newTilePosition = new Vector3Int(i, newJPos, 0);
+                            Vector2Int newTilePosition = new Vector2Int(i, newJPos);
                             if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
@@ -106,14 +83,14 @@ public class General : MonoBehaviour
                         break;
                     }
 
-                    // Проверка вертикаьной линии.
+                    // Check vertical line.
                     for (int k = 1; k < winAmount; k++)
                     {
                         int newIPos = i + k;
 
                         if (newIPos >= 0 && newIPos < fieldSize)
                         {
-                            Vector3Int newTilePosition = new Vector3Int(newIPos, j, 0);
+                            Vector2Int newTilePosition = new Vector2Int(newIPos, j);
                             if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
@@ -129,7 +106,7 @@ public class General : MonoBehaviour
                         break;
                     }
 
-                    // Проверка диагональной линии слева на право.
+                    // Check bottom left-top right diagonal line.
                     for (int k = 1; k < winAmount; k++)
                     {
                         int newIPos = i + k;
@@ -138,7 +115,7 @@ public class General : MonoBehaviour
                         if (newIPos >= 0 && newIPos < fieldSize &&
                             newJPos >= 0 && newJPos < fieldSize)
                         {
-                            Vector3Int newTilePosition = new Vector3Int(newIPos, newJPos, 0);
+                            Vector2Int newTilePosition = new Vector2Int(newIPos, newJPos);
                             if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
@@ -153,7 +130,7 @@ public class General : MonoBehaviour
                         break;
                     }
 
-                    // Проверка диагональной линии справа на лево.
+                    // Check bottom right-top left diagonal line.
                     for (int k = 1; k < winAmount; k++)
                     {
                         int newIPos = i + k;
@@ -162,7 +139,7 @@ public class General : MonoBehaviour
                         if (newIPos >= 0 && newIPos < fieldSize &&
                             newJPos >= 0 && newJPos < fieldSize)
                         {
-                            Vector3Int newTilePosition = new Vector3Int(newIPos, newJPos, 0);
+                            Vector2Int newTilePosition = new Vector2Int(newIPos, newJPos);
                             if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
@@ -189,7 +166,7 @@ public class General : MonoBehaviour
         }
         else
         {
-            // Ничья.
+            // Draw.
             return true;
         }
 

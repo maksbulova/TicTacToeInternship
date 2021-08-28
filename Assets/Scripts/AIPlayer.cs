@@ -9,37 +9,35 @@ public class AIPlayer : Player
 
     public override IEnumerator Act()
     {
-        Debug.Log("Ход компьютера");
-
         yield return new WaitForSeconds(1);
         Figure opponentFigure = (playerFigure == Figure.circle ? Figure.cross : Figure.circle);
 
-        List<(int, int)> aviableTurns = new List<(int, int)>();
-        List<(int, int)> criticalTurn = new List<(int, int)>();
-        (int, int) choosenTurn;
+        List<Vector2Int> avaibleTurns = new List<Vector2Int>();
+        List<Vector2Int> criticalTurn = new List<Vector2Int>();
+        Vector2Int choosenTurn;
 
         for (int i = 0; i < fieldSize; i++)
         {
             for (int j = 0; j < fieldSize; j++)
             {
-                Vector3Int tilePosition = new Vector3Int(i, j, 0);
+                Vector2Int tilePosition = new Vector2Int(i, j);
                 if (CheckFigure(tilePosition) == Figure.empty)
                 {
-                    if (SuggestTurn(playerFigure, (i, j)))
+                    if (SuggestTurn(playerFigure, new Vector2Int(i, j)))
                     {
-                        // Победный ход.
-                        choosenTurn = (i, j);
+                        // Win turn.
+                        choosenTurn = new Vector2Int(i, j);
                         goto setTile;
                     }
-                    else if (SuggestTurn(opponentFigure, (i, j)))
+                    else if (SuggestTurn(opponentFigure, new Vector2Int(i, j)))
                     {
-                        // Ход предотвращающий победу соперника.
-                        criticalTurn.Add((i, j));
+                        // Prevent opponents win.
+                        criticalTurn.Add(new Vector2Int(i, j));
                     }
                     else
                     {
-                        // Случайный ход из доступных.
-                        aviableTurns.Add((i, j));
+                        // Random avaible turn.
+                        avaibleTurns.Add(new Vector2Int(i, j));
                     }
                 }
             }
@@ -52,8 +50,8 @@ public class AIPlayer : Player
         }
         else
         {
-            int choosenIndex = Random.Range(0, aviableTurns.Count);
-            choosenTurn = aviableTurns[choosenIndex];
+            int choosenIndex = Random.Range(0, avaibleTurns.Count);
+            choosenTurn = avaibleTurns[choosenIndex];
         }
 
     setTile:
@@ -63,7 +61,7 @@ public class AIPlayer : Player
         turnManager.MakeNextTurn();
     }
 
-    private bool SuggestTurn(Figure figure, (int, int) tilePosition)
+    private bool SuggestTurn(Figure figure, Vector2Int tilePosition)
     {
         general.SetFigure(figure, tilePosition);
         bool answer = CheckWinCondition(out _);

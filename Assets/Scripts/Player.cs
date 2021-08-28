@@ -10,5 +10,4 @@ public abstract class Player : MonoBehaviour
     [SerializeField] protected TurnManager turnManager;
 
     public abstract IEnumerator Act();
-
 }
