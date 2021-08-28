@@ -1,9 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using static General;
-using static TurnManager;
 
 public class HumanPlayer : Player
 {
@@ -13,8 +10,8 @@ public class HumanPlayer : Player
     {
         Debug.Log("Ход игрока");
 
-        States currentTurn = gameState;
-        while (gameState == currentTurn)
+        TurnManager.States currentTurn = TurnManager.gameState;
+        while (TurnManager.gameState == currentTurn)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -28,8 +25,8 @@ public class HumanPlayer : Player
                    (cellPosition.y >= 0 && cellPosition.y <= fieldSize))
                 {
 
-                    SetFigure(playerFigure, cellPosition);
-                    MakeNextTurn();
+                    general.SetFigure(playerFigure, cellPosition);
+                    turnManager.MakeNextTurn();
                 }
             }
 

@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using static General;
 
-public class TurnManager
+public class TurnManager : MonoBehaviour
 {
     public static Player crossPlayer, circlePlayer;
-    
+    [SerializeField] private MainMenu mainMenuManager;
+
 
     public enum States
     {
@@ -16,7 +15,7 @@ public class TurnManager
     public static States gameState;
 
 
-    public static void MakeNextTurn()
+    public void MakeNextTurn()
     {
 
         if (General.CheckWinCondition(out Figure winnerFigure))
@@ -44,7 +43,7 @@ public class TurnManager
                 break;
 
             case States.finish:
-                General.general.mainMenu.StartCoroutine(General.general.mainMenu.ShowGameOverScreen(winnerFigure));
+                StartCoroutine(mainMenuManager.ShowGameOverScreen(winnerFigure));
                 break;
 
             default:

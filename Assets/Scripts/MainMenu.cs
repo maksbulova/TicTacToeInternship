@@ -1,19 +1,18 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Tilemaps;
 using static General;
 
 public class MainMenu : MonoBehaviour
 {
 
     [SerializeField] private Player player1, player2;
-    [SerializeField] private Tilemap backgroundTilemap;
-    [SerializeField] private TileBase backgroundTile;
     [SerializeField] private GameObject menuScreen, resultScreen;
     [SerializeField] private Text resultText;
     [SerializeField] private Slider fieldSizeSlider;
+    [SerializeField] private General general;
+    [SerializeField] private TurnManager turnManager;
+
 
     private void Start()
     {
@@ -50,8 +49,15 @@ public class MainMenu : MonoBehaviour
 
         menuScreen.SetActive(false);
 
-        // Генерация поля.
-        General.gameField = new Figure[fieldSize, fieldSize];
+        GenerateField(fieldSize);
+
+        Debug.Log("Начало раунда");
+        turnManager.MakeNextTurn();
+    }
+
+    private void GenerateField(int fieldSize)
+    {
+        gameField = new Figure[fieldSize, fieldSize];
         Vector3Int tilePos = new Vector3Int(0, 0, 0);
 
         for (int i = 0; i < fieldSize; i++)
@@ -59,7 +65,7 @@ public class MainMenu : MonoBehaviour
             for (int j = 0; j < fieldSize; j++)
             {
                 gameField[i, j] = Figure.empty;
-                backgroundTilemap.SetTile(tilePos, backgroundTile);
+                general.backgroundTilemap.SetTile(tilePos, general.backgroundTile);
 
                 tilePos += Vector3Int.right;
             }
@@ -68,8 +74,7 @@ public class MainMenu : MonoBehaviour
             tilePos += Vector3Int.up;
         }
 
-        Debug.Log("Начало раунда");
-        TurnManager.MakeNextTurn();
+        // TODO focus camera on field
     }
 
     public IEnumerator ShowGameOverScreen(Figure winnerFigure)
@@ -112,7 +117,7 @@ public class MainMenu : MonoBehaviour
             for (int j = 0; j < fieldSize; j++)
             {
                 Vector3Int tilePosition = new Vector3Int(i, j, 0);
-                backgroundTilemap.SetTile(tilePosition, null);
+                general.backgroundTilemap.SetTile(tilePosition, null);
 
                 yield return new WaitForSeconds(0.2f);
             }

@@ -1,15 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class General : MonoBehaviour
 {
-    public static General general;
-    public MainMenu mainMenu;
-
-    public Tilemap figureTileMap;
-    public TileBase circleTile, crossTile;
+    public Tilemap figureTileMap, backgroundTilemap;
+    public TileBase circleTile, crossTile, backgroundTile;
 
     public static int fieldSize = 3;
     public const int winAmount = 3;
@@ -17,42 +12,15 @@ public class General : MonoBehaviour
     public enum Figure { cross, circle, empty }
     public static Figure[,] gameField;
 
-    private void Awake()
-    {
-        // Я помню с первой лекции что синглтон лучше не использовать,
-        // но удобной альтернативы перетаскивать в инспектор поля и
-        // обращаться к ним из любого скрипта я не нашел.
-        if (general != null)
-        {
-            Destroy(general);
-        }
-        else
-        {
-            general = this;
-        }
-    }
-
-    private static (int, int) GetTileIndex(Vector3Int tilePosition)
-    {
-        return (tilePosition.x, tilePosition.y);
-    }
 
     public static Figure CheckFigure(Vector3Int tilePosition)
     {
-        (int, int) tileIndex = GetTileIndex(tilePosition);
-        return CheckFigure(tileIndex);
+        return gameField[tilePosition.x, tilePosition.y];
     }
 
-    public static Figure CheckFigure((int, int) tileIndex)
+    public void SetFigure(Figure figure, Vector3Int tilePosition)
     {
-        return gameField[tileIndex.Item1, tileIndex.Item2];
-    }
-
-    public static void SetFigure(Figure figure, Vector3Int tilePosition)
-    {
-        (int, int) tileIndex = GetTileIndex(tilePosition);
-
-        gameField[tileIndex.Item1, tileIndex.Item2] = figure;
+        gameField[tilePosition.x, tilePosition.y] = figure;
 
         TileBase newTile = null;
         tilePosition.z = 0;
@@ -60,20 +28,20 @@ public class General : MonoBehaviour
         switch (figure)
         {
             case Figure.cross:
-                newTile = general.crossTile;
+                newTile = crossTile;
                 break;
             case Figure.circle:
-                newTile = general.circleTile;
+                newTile = circleTile;
                 break;
             case Figure.empty:
                 newTile = null;
                 break;
         }
 
-        general.figureTileMap.SetTile(tilePosition, newTile);
+        figureTileMap.SetTile(tilePosition, newTile);
     }
 
-    public static void SetFigure(Figure figure, (int, int) tileIndex)
+    public void SetFigure(Figure figure, (int, int) tileIndex)
     {
         Vector3Int tilePosition = new Vector3Int(tileIndex.Item1, tileIndex.Item2, 0);
         gameField[tileIndex.Item1, tileIndex.Item2] = figure;
@@ -83,17 +51,17 @@ public class General : MonoBehaviour
         switch (figure)
         {
             case Figure.cross:
-                newTile = general.crossTile;
+                newTile = crossTile;
                 break;
             case Figure.circle:
-                newTile = general.circleTile;
+                newTile = circleTile;
                 break;
             case Figure.empty:
                 newTile = null;
                 break;
         }
 
-        general.figureTileMap.SetTile(tilePosition, newTile);
+        figureTileMap.SetTile(tilePosition, newTile);
     }
 
 
@@ -106,7 +74,8 @@ public class General : MonoBehaviour
         {
             for (int j = 0; j < fieldSize; j++)
             {
-                Figure figure = CheckFigure((i, j));
+                Vector3Int tilePosition = new Vector3Int(i, j, 0);
+                Figure figure = CheckFigure(tilePosition);
 
                 if (figure == Figure.empty)
                 {
@@ -121,7 +90,8 @@ public class General : MonoBehaviour
 
                         if (newJPos >= 0 && newJPos < fieldSize)
                         {
-                            if (CheckFigure((i, newJPos)) == figure)
+                            Vector3Int newTilePosition = new Vector3Int(i, newJPos, 0);
+                            if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
                                 {
@@ -143,7 +113,8 @@ public class General : MonoBehaviour
 
                         if (newIPos >= 0 && newIPos < fieldSize)
                         {
-                            if (CheckFigure((newIPos, j)) == figure)
+                            Vector3Int newTilePosition = new Vector3Int(newIPos, j, 0);
+                            if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
                                 {
@@ -167,14 +138,14 @@ public class General : MonoBehaviour
                         if (newIPos >= 0 && newIPos < fieldSize &&
                             newJPos >= 0 && newJPos < fieldSize)
                         {
-                            if (CheckFigure((newIPos, newJPos)) == figure)
+                            Vector3Int newTilePosition = new Vector3Int(newIPos, newJPos, 0);
+                            if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
                                 {
                                     winFigure = figure;
                                     return true;
                                 }
-
                                 continue;
                             }
                         }
@@ -191,14 +162,14 @@ public class General : MonoBehaviour
                         if (newIPos >= 0 && newIPos < fieldSize &&
                             newJPos >= 0 && newJPos < fieldSize)
                         {
-                            if (CheckFigure((newIPos, newJPos)) == figure)
+                            Vector3Int newTilePosition = new Vector3Int(newIPos, newJPos, 0);
+                            if (CheckFigure(newTilePosition) == figure)
                             {
                                 if (k + 1 == winAmount)
                                 {
                                     winFigure = figure;
                                     return true;
                                 }
-
                                 continue;
                             }
                         }

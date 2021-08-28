@@ -22,7 +22,8 @@ public class AIPlayer : Player
         {
             for (int j = 0; j < fieldSize; j++)
             {
-                if (CheckFigure((i, j)) == Figure.empty)
+                Vector3Int tilePosition = new Vector3Int(i, j, 0);
+                if (CheckFigure(tilePosition) == Figure.empty)
                 {
                     if (SuggestTurn(playerFigure, (i, j)))
                     {
@@ -57,16 +58,16 @@ public class AIPlayer : Player
 
     setTile:
 
-        SetFigure(playerFigure, choosenTurn);
+        general.SetFigure(playerFigure, choosenTurn);
 
-        TurnManager.MakeNextTurn();
+        turnManager.MakeNextTurn();
     }
 
     private bool SuggestTurn(Figure figure, (int, int) tilePosition)
     {
-        SetFigure(figure, tilePosition);
+        general.SetFigure(figure, tilePosition);
         bool answer = CheckWinCondition(out _);
-        SetFigure(Figure.empty, tilePosition);
+        general.SetFigure(Figure.empty, tilePosition);
 
         return answer;
     }

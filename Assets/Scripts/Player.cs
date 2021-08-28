@@ -1,14 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static TurnManager;
 using static General;
 
 
 public abstract class Player : MonoBehaviour
 {
-    [HideInInspector]
-    public Figure playerFigure;
+    [HideInInspector] public Figure playerFigure;
+    [SerializeField] protected General general;
+    [SerializeField] protected TurnManager turnManager;
 
     public abstract IEnumerator Act();
 

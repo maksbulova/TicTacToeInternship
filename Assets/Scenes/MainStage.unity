@@ -575,13 +575,27 @@ GameObject:
   - component: {fileID: 350374331}
   - component: {fileID: 350374330}
   - component: {fileID: 350374329}
+  - component: {fileID: 350374327}
   m_Layer: 0
-  m_Name: Manager
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &350374327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350374326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1274dffde9d7f1442b5c27f40e76c62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuManager: {fileID: 350374329}
 --- !u!114 &350374329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,11 +610,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1: {fileID: 1323022230}
   player2: {fileID: 429747100}
-  backgroundTilemap: {fileID: 269687717}
-  backgroundTile: {fileID: 11400000, guid: 921d091036fb07441a599bad47be29ab, type: 2}
   menuScreen: {fileID: 1764159588}
   resultScreen: {fileID: 1800899333}
   resultText: {fileID: 148225126}
+  fieldSizeSlider: {fileID: 0}
+  general: {fileID: 350374330}
+  turnManager: {fileID: 350374327}
 --- !u!114 &350374330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,10 +628,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47cd047f7301af647a1ff038df9539e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMenu: {fileID: 350374329}
   figureTileMap: {fileID: 673470603}
+  backgroundTilemap: {fileID: 269687717}
   circleTile: {fileID: 11400000, guid: b70285d59bd4c3046863b87cb739df5e, type: 2}
   crossTile: {fileID: 11400000, guid: cf56d30cc325d9943a040a83c29b6bac, type: 2}
+  backgroundTile: {fileID: 11400000, guid: 921d091036fb07441a599bad47be29ab, type: 2}
 --- !u!4 &350374331
 Transform:
   m_ObjectHideFlags: 0
@@ -661,6 +677,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerFigure: 0
+  general: {fileID: 350374330}
+  turnManager: {fileID: 350374327}
 --- !u!4 &429747101
 Transform:
   m_ObjectHideFlags: 0
@@ -1349,6 +1367,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerFigure: 0
+  general: {fileID: 350374330}
+  turnManager: {fileID: 350374327}
 --- !u!4 &1323022231
 Transform:
   m_ObjectHideFlags: 0
