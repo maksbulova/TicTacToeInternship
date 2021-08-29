@@ -3,15 +3,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using static General;
 
+[ExecuteAlways]
 public class MainMenu : MonoBehaviour
 {
 
     [SerializeField] private Player player1, player2;
+
     [SerializeField] private GameObject menuScreen, resultScreen;
     [SerializeField] private Text resultText;
+
     [SerializeField] private Slider fieldSizeSlider;
+    [SerializeField] private Text fieldSizeText;
+
     [SerializeField] private General general;
     [SerializeField] private TurnManager turnManager;
+    [SerializeField] private Camera mainCamera;
 
     private const float resultScreenDuration = 2;
 
@@ -50,13 +56,16 @@ public class MainMenu : MonoBehaviour
 
         menuScreen.SetActive(false);
 
-        GenerateField(fieldSize);
+        GenerateField();
 
         turnManager.MakeNextTurn();
     }
 
-    private void GenerateField(int fieldSize)
+    [ContextMenu("Generate Field")]
+    private void GenerateField()
     {
+        SetFieldSize();
+
         gameField = new Figure[fieldSize, fieldSize];
         Vector3Int tilePos = new Vector3Int(0, 0, 0);
 
@@ -74,7 +83,14 @@ public class MainMenu : MonoBehaviour
             tilePos += Vector3Int.up;
         }
 
-        // TODO focus camera on field
+        // Focus camera on field;
+        float fieldCenter = ((float) fieldSize) / 2;
+        const float cameraScaleCooficient = 0.66f;
+
+        Vector3 cameraPosition = new Vector3(fieldCenter, fieldCenter, -10);
+        mainCamera.transform.position = cameraPosition;
+
+        mainCamera.orthographicSize =  fieldSize * cameraScaleCooficient;
     }
 
     public IEnumerator ShowGameOverScreen(Figure winnerFigure)
@@ -117,20 +133,29 @@ public class MainMenu : MonoBehaviour
 
     public void SetFieldSize()
     {
+        int fieldSize;
+
         switch (fieldSizeSlider.value)
         {
             case 0:
-                
+                fieldSize = 3;
                 break;
             case 1:
+                fieldSize = 5;
                 break;
             case 2:
+                fieldSize = 9;
                 break;
             case 3:
+                fieldSize = 15;
                 break;
-
             default:
+                fieldSize = 3;
                 break;
         }
+
+        fieldSizeText.text = $"Field size:\n{fieldSize}x{fieldSize}";
+
+        General.fieldSize = fieldSize;
     }
 }

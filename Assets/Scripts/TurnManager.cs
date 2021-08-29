@@ -6,14 +6,12 @@ public class TurnManager : MonoBehaviour
     public static Player crossPlayer, circlePlayer;
     [SerializeField] private MainMenu mainMenuManager;
 
-
     public enum States
     {
         start, crossTurn, circleTurn, finish
     }
 
     public static States gameState;
-
 
     public void MakeNextTurn()
     {
@@ -23,7 +21,6 @@ public class TurnManager : MonoBehaviour
             gameState = States.finish;
             Debug.Log($"Победа {winnerFigure}");
         }
-
 
         switch (gameState)
         {
