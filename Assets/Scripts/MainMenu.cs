@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private General general;
     [SerializeField] private TurnManager turnManager;
 
+    private const float resultScreenDuration = 2;
 
     private void Start()
     {
@@ -98,7 +99,7 @@ public class MainMenu : MonoBehaviour
 
         resultText.text = text;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(resultScreenDuration);
 
         for (int i = 0; i < fieldSize; i++)
         {
@@ -106,27 +107,12 @@ public class MainMenu : MonoBehaviour
             {
                 Vector3Int tilePosition = new Vector3Int(i, j, 0);
                 general.figureTileMap.SetTile(tilePosition, null);
-
-                yield return new WaitForSeconds(0.2f);
-            }
-        }
-
-        for (int i = 0; i < fieldSize; i++)
-        {
-            for (int j = 0; j < fieldSize; j++)
-            {
-                Vector3Int tilePosition = new Vector3Int(i, j, 0);
                 general.backgroundTilemap.SetTile(tilePosition, null);
-
-                yield return new WaitForSeconds(0.2f);
             }
         }
-
-        yield return new WaitForSeconds(1f);
 
         resultScreen.SetActive(false);
         menuScreen.SetActive(true);
-        
     }
 
     public void SetFieldSize()

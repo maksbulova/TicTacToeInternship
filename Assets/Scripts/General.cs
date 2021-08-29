@@ -7,7 +7,7 @@ public class General : MonoBehaviour
     public TileBase circleTile, crossTile, backgroundTile;
 
     public static int fieldSize = 3;
-    public const int winAmount = 3;
+    private static int winAmount;
 
     public enum Figure { cross, circle, empty }
     public static Figure[,] gameField;
@@ -44,6 +44,8 @@ public class General : MonoBehaviour
 
     public static bool CheckWinCondition(out Figure winFigure)
     {
+        winAmount = fieldSize;
+
         // Draw if no turns left.
         bool emptyLeft = false;
 
