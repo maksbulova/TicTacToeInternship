@@ -6,10 +6,11 @@ using static General;
 
 public class AIPlayer : Player
 {
+    private const float aiTurnDelay = 1;
 
     public override IEnumerator Act()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(aiTurnDelay);
         Figure opponentFigure = (playerFigure == Figure.circle ? Figure.cross : Figure.circle);
 
         List<Vector2Int> avaibleTurns = new List<Vector2Int>();

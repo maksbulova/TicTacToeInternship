@@ -7,7 +7,6 @@ public class General : MonoBehaviour
     public TileBase circleTile, crossTile, backgroundTile;
 
     public static int fieldSize = 3;
-    private static int winAmount;
 
     public enum Figure { cross, circle, empty }
     public static Figure[,] gameField;
@@ -44,133 +43,113 @@ public class General : MonoBehaviour
 
     public static bool CheckWinCondition(out Figure winFigure)
     {
-        winAmount = fieldSize;
+        Figure outputFigure = Figure.empty;
 
-        // Draw if no turns left.
-        bool emptyLeft = false;
-
-        for (int i = 0; i < fieldSize; i++)
+        bool CheckLine(Vector2Int lineOrigin, bool diagonal = false)
         {
-            for (int j = 0; j < fieldSize; j++)
+            Figure figure = CheckFigure(lineOrigin);
+
+            if (figure != Figure.empty)
             {
-                Vector2Int tilePosition = new Vector2Int(i, j);
-                Figure figure = CheckFigure(tilePosition);
-
-                if (figure == Figure.empty)
+                for (int xPos = 1; xPos < fieldSize; xPos++)
                 {
-                    emptyLeft = true;
+                    int yPos = diagonal ? xPos : lineOrigin.y;
+                    Vector2Int newTilePosition = new Vector2Int(xPos, yPos);
+
+                    Figure newFigure = CheckFigure(newTilePosition);
+
+                    if (newFigure == figure)
+                    {
+                        if (xPos + 1 == fieldSize)
+                        {
+                            outputFigure = figure;
+                            return true;
+                        }
+
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+            }
+
+            outputFigure = Figure.empty;
+            return false;
+
+        }
+
+
+        bool CheckAllLines()
+        {
+            for (int yPos = 0; yPos < fieldSize; yPos++)
+            {
+                bool lineWinCondition;
+                Vector2Int checkedTile = new Vector2Int(0, yPos);
+
+                lineWinCondition = CheckLine(checkedTile);
+
+                if (yPos == 0 && !lineWinCondition)
                 {
-                    // Check horizontal line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newJPos = j + k;
+                    lineWinCondition = CheckLine(checkedTile, diagonal: true);
+                }
 
-                        if (newJPos >= 0 && newJPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(i, newJPos);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
+                if (lineWinCondition)
+                {
+                    return true;
+                }
+            }
 
-                                continue;
-                            }
-                        }
+            return false;
+        }
 
-                        break;
-                    }
+        void TransposeField()
+        {
+            Figure[,] tempField = gameField;
 
-                    // Check vertical line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newIPos = i + k;
+            for (int x = 0; x < fieldSize; x++)
+            {
+                for (int y = 0; y < fieldSize; y++)
+                {
+                    gameField[x, y] = tempField[y, x];
+                }
+            }
+        }
 
-                        if (newIPos >= 0 && newIPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(newIPos, j);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
+        if (CheckAllLines())
+        {
+            winFigure = outputFigure;
+            return true;
+        }
+        else
+        {
+            TransposeField();
 
-                                continue;
-                            }
-                        }
+            if (CheckAllLines())
+            {
+                winFigure = outputFigure;
+                return true;
+            }
+            TransposeField();
+        }
 
-                        break;
-                    }
-
-                    // Check bottom left-top right diagonal line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newIPos = i + k;
-                        int newJPos = j + k;
-
-                        if (newIPos >= 0 && newIPos < fieldSize &&
-                            newJPos >= 0 && newJPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(newIPos, newJPos);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
-                                continue;
-                            }
-                        }
-
-                        break;
-                    }
-
-                    // Check bottom right-top left diagonal line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newIPos = i + k;
-                        int newJPos = j - k;
-
-                        if (newIPos >= 0 && newIPos < fieldSize &&
-                            newJPos >= 0 && newJPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(newIPos, newJPos);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
-                                continue;
-                            }
-                        }
-
-                        break;
-                    }
+        for (int x = 0; x < fieldSize; x++)
+        {
+            for (int y = 0; y < fieldSize; y++)
+            {
+                if (gameField[x, y] == Figure.empty)
+                {
+                    winFigure = outputFigure;
+                    return false;
 
                 }
             }
         }
 
-        winFigure = Figure.empty;
-
-        if (emptyLeft)
-        {
-            return false;
-        }
-        else
-        {
-            // Draw.
-            return true;
-        }
+        // Draw if no turns left.
+        winFigure = outputFigure;
+        return true;
 
     }
 
