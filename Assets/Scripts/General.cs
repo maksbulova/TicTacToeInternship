@@ -45,22 +45,21 @@ public class General : MonoBehaviour
     {
         Figure outputFigure = Figure.empty;
 
-        bool CheckLine(Vector2Int lineOrigin, bool diagonal = false)
+        bool CheckLine(Vector2Int lineOrigin, Vector2Int lineDirection)
         {
             Figure figure = CheckFigure(lineOrigin);
 
             if (figure != Figure.empty)
             {
-                for (int xPos = 1; xPos < fieldSize; xPos++)
+                for (int offset = 1; offset < fieldSize; offset++)
                 {
-                    int yPos = diagonal ? xPos : lineOrigin.y;
-                    Vector2Int newTilePosition = new Vector2Int(xPos, yPos);
+                    Vector2Int tilePosition = lineOrigin + lineDirection * offset;
 
-                    Figure newFigure = CheckFigure(newTilePosition);
+                    Figure newFigure = CheckFigure(tilePosition);
 
                     if (newFigure == figure)
                     {
-                        if (xPos + 1 == fieldSize)
+                        if (offset + 1 == fieldSize)
                         {
                             outputFigure = figure;
                             return true;
@@ -75,82 +74,65 @@ public class General : MonoBehaviour
                 }
             }
 
-            outputFigure = Figure.empty;
             return false;
 
         }
 
 
-        bool CheckAllLines()
+        bool CheckAllLinesInColumn(Vector2Int columnDirection, Vector2Int lineDirection)
         {
-            for (int yPos = 0; yPos < fieldSize; yPos++)
+            for (int offset = 0; offset < fieldSize; offset++)
             {
-                bool lineWinCondition;
-                Vector2Int checkedTile = new Vector2Int(0, yPos);
+                Vector2Int checkedTile = columnDirection * offset;
 
-                lineWinCondition = CheckLine(checkedTile);
-
-                if (yPos == 0 && !lineWinCondition)
-                {
-                    lineWinCondition = CheckLine(checkedTile, diagonal: true);
-                }
-
-                if (lineWinCondition)
-                {
+                if (CheckLine(checkedTile, lineDirection))
                     return true;
-                }
             }
 
             return false;
         }
 
-        void TransposeField()
+        bool CheckMatrix()
         {
-            Figure[,] tempField = gameField;
+            bool verticalCheck = CheckAllLinesInColumn(Vector2Int.up, Vector2Int.right);
+            bool horizontalCheck = CheckAllLinesInColumn(Vector2Int.right, Vector2Int.up);
+            bool diagonal1Check = CheckLine(Vector2Int.zero, Vector2Int.up + Vector2Int.right);
+            bool diagonal2Check = CheckLine(Vector2Int.right * (fieldSize - 1), Vector2Int.up + Vector2Int.left);
 
-            for (int x = 0; x < fieldSize; x++)
+            if (verticalCheck || horizontalCheck || diagonal1Check || diagonal2Check)
             {
-                for (int y = 0; y < fieldSize; y++)
-                {
-                    gameField[x, y] = tempField[y, x];
-                }
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        if (CheckAllLines())
+        if (CheckMatrix())
         {
             winFigure = outputFigure;
             return true;
         }
         else
         {
-            TransposeField();
-
-            if (CheckAllLines())
+            for (int x = 0; x < fieldSize; x++)
             {
-                winFigure = outputFigure;
-                return true;
-            }
-            TransposeField();
-        }
-
-        for (int x = 0; x < fieldSize; x++)
-        {
-            for (int y = 0; y < fieldSize; y++)
-            {
-                if (gameField[x, y] == Figure.empty)
+                for (int y = 0; y < fieldSize; y++)
                 {
-                    winFigure = outputFigure;
-                    return false;
+                    if (gameField[x, y] == Figure.empty)
+                    {
+                        winFigure = outputFigure;
+                        return false;
 
+                    }
                 }
             }
+
+            // Draw if no turns left.
+            winFigure = outputFigure;
+            return true;
         }
-
-        // Draw if no turns left.
-        winFigure = outputFigure;
-        return true;
-
     }
 
 }
