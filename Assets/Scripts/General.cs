@@ -7,7 +7,6 @@ public class General : MonoBehaviour
     public TileBase circleTile, crossTile, backgroundTile;
 
     public static int fieldSize = 3;
-    private static int winAmount;
 
     public enum Figure { cross, circle, empty }
     public static Figure[,] gameField;
@@ -44,134 +43,96 @@ public class General : MonoBehaviour
 
     public static bool CheckWinCondition(out Figure winFigure)
     {
-        winAmount = fieldSize;
+        Figure outputFigure = Figure.empty;
 
-        // Draw if no turns left.
-        bool emptyLeft = false;
-
-        for (int i = 0; i < fieldSize; i++)
+        bool CheckLine(Vector2Int lineOrigin, Vector2Int lineDirection)
         {
-            for (int j = 0; j < fieldSize; j++)
+            Figure figure = CheckFigure(lineOrigin);
+
+            if (figure != Figure.empty)
             {
-                Vector2Int tilePosition = new Vector2Int(i, j);
-                Figure figure = CheckFigure(tilePosition);
-
-                if (figure == Figure.empty)
+                for (int offset = 1; offset < fieldSize; offset++)
                 {
-                    emptyLeft = true;
+                    Vector2Int tilePosition = lineOrigin + lineDirection * offset;
+
+                    Figure newFigure = CheckFigure(tilePosition);
+
+                    if (newFigure == figure)
+                    {
+                        if (offset + 1 == fieldSize)
+                        {
+                            outputFigure = figure;
+                            return true;
+                        }
+
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
-                {
-                    // Check horizontal line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newJPos = j + k;
+            }
 
-                        if (newJPos >= 0 && newJPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(i, newJPos);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
+            return false;
 
-                                continue;
-                            }
-                        }
+        }
 
-                        break;
-                    }
 
-                    // Check vertical line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newIPos = i + k;
+        bool CheckAllLinesInColumn(Vector2Int columnDirection, Vector2Int lineDirection)
+        {
+            for (int offset = 0; offset < fieldSize; offset++)
+            {
+                Vector2Int checkedTile = columnDirection * offset;
 
-                        if (newIPos >= 0 && newIPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(newIPos, j);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
+                if (CheckLine(checkedTile, lineDirection))
+                    return true;
+            }
 
-                                continue;
-                            }
-                        }
+            return false;
+        }
 
-                        break;
-                    }
+        bool CheckMatrix()
+        {
+            bool verticalCheck = CheckAllLinesInColumn(Vector2Int.up, Vector2Int.right);
+            bool horizontalCheck = CheckAllLinesInColumn(Vector2Int.right, Vector2Int.up);
+            bool diagonal1Check = CheckLine(Vector2Int.zero, Vector2Int.up + Vector2Int.right);
+            bool diagonal2Check = CheckLine(Vector2Int.right * (fieldSize - 1), Vector2Int.up + Vector2Int.left);
 
-                    // Check bottom left-top right diagonal line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newIPos = i + k;
-                        int newJPos = j + k;
-
-                        if (newIPos >= 0 && newIPos < fieldSize &&
-                            newJPos >= 0 && newJPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(newIPos, newJPos);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
-                                continue;
-                            }
-                        }
-
-                        break;
-                    }
-
-                    // Check bottom right-top left diagonal line.
-                    for (int k = 1; k < winAmount; k++)
-                    {
-                        int newIPos = i + k;
-                        int newJPos = j - k;
-
-                        if (newIPos >= 0 && newIPos < fieldSize &&
-                            newJPos >= 0 && newJPos < fieldSize)
-                        {
-                            Vector2Int newTilePosition = new Vector2Int(newIPos, newJPos);
-                            if (CheckFigure(newTilePosition) == figure)
-                            {
-                                if (k + 1 == winAmount)
-                                {
-                                    winFigure = figure;
-                                    return true;
-                                }
-                                continue;
-                            }
-                        }
-
-                        break;
-                    }
-
-                }
+            if (verticalCheck || horizontalCheck || diagonal1Check || diagonal2Check)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        winFigure = Figure.empty;
-
-        if (emptyLeft)
+        if (CheckMatrix())
         {
-            return false;
+            winFigure = outputFigure;
+            return true;
         }
         else
         {
-            // Draw.
+            for (int x = 0; x < fieldSize; x++)
+            {
+                for (int y = 0; y < fieldSize; y++)
+                {
+                    if (gameField[x, y] == Figure.empty)
+                    {
+                        winFigure = outputFigure;
+                        return false;
+
+                    }
+                }
+            }
+
+            // Draw if no turns left.
+            winFigure = outputFigure;
             return true;
         }
-
     }
 
 }

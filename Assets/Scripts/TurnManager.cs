@@ -19,7 +19,7 @@ public class TurnManager : MonoBehaviour
         if (General.CheckWinCondition(out Figure winnerFigure))
         {
             gameState = States.finish;
-            Debug.Log($"Победа {winnerFigure}");
+            Debug.Log($"{winnerFigure} won");
         }
 
         switch (gameState)
