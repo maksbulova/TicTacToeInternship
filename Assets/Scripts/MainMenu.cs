@@ -6,15 +6,21 @@ using static General;
 [ExecuteAlways]
 public class MainMenu : MonoBehaviour
 {
-
     [SerializeField] private Player player1, player2;
 
+    [Space]
     [SerializeField] private GameObject menuScreen, resultScreen;
     [SerializeField] private Text resultText;
 
+    [Space]
     [SerializeField] private Slider fieldSizeSlider;
     [SerializeField] private Text fieldSizeText;
 
+    [SerializeField] private Toggle Mode2DToggle;
+    [SerializeField] private Toggle Mode3DToggle;
+    private bool gameMode2D = true;
+
+    [Space]
     [SerializeField] private General general;
     [SerializeField] private TurnManager turnManager;
     [SerializeField] private Camera mainCamera;
@@ -158,4 +164,16 @@ public class MainMenu : MonoBehaviour
 
         General.fieldSize = fieldSize;
     }
+
+    public void Toggle2DMode(Toggle toggle)
+    {
+        Mode3DToggle.isOn = !toggle.isOn;
+        gameMode2D = toggle.isOn;
+    }
+    public void Toggle3DMode(Toggle toggle)
+    {
+        Mode2DToggle.isOn = !toggle.isOn;
+        gameMode2D = !toggle.isOn;
+    }
+
 }

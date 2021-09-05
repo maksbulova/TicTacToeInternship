@@ -6,6 +6,8 @@ public class General : MonoBehaviour
     public Tilemap figureTileMap, backgroundTilemap;
     public TileBase circleTile, crossTile, backgroundTile;
 
+    public GameObject circle3DModel, cross3DModel, background3DModel;
+
     public static int fieldSize = 3;
 
     public enum Figure { cross, circle, empty }
