@@ -57,16 +57,16 @@ public class AIPlayer : Player
 
     setTile:
 
-        general.SetFigure(playerFigure, choosenTurn);
+        general.setFigure(playerFigure, choosenTurn);
 
         turnManager.MakeNextTurn();
     }
 
     private bool SuggestTurn(Figure figure, Vector2Int tilePosition)
     {
-        general.SetFigure(figure, tilePosition);
+        general.setFigure(figure, tilePosition);
         bool answer = CheckWinCondition(out _);
-        general.SetFigure(Figure.empty, tilePosition);
+        general.setFigure(Figure.empty, tilePosition);
 
         return answer;
     }

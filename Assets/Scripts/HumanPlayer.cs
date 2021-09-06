@@ -23,8 +23,7 @@ public class HumanPlayer : Player
                    (cellPosition.x >= 0 && cellPosition.x <= fieldSize) &&
                    (cellPosition.y >= 0 && cellPosition.y <= fieldSize))
                 {
-
-                    general.SetFigure(playerFigure, cellPosition);
+                    general.setFigure(playerFigure, cellPosition);
                     turnManager.MakeNextTurn();
                 }
             }

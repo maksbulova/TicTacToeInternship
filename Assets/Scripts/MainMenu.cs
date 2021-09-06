@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using static General;
 
-[ExecuteAlways]
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Player player1, player2;
@@ -18,12 +17,10 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] private Toggle Mode2DToggle;
     [SerializeField] private Toggle Mode3DToggle;
-    private bool gameMode2D = true;
 
     [Space]
     [SerializeField] private General general;
     [SerializeField] private TurnManager turnManager;
-    [SerializeField] private Camera mainCamera;
 
     private const float resultScreenDuration = 2;
 
@@ -62,42 +59,13 @@ public class MainMenu : MonoBehaviour
 
         menuScreen.SetActive(false);
 
-        GenerateField();
+        SetFieldSize();
+        general.SetMode();
+        general.generateField();
 
         turnManager.MakeNextTurn();
     }
 
-    [ContextMenu("Generate Field")]
-    private void GenerateField()
-    {
-        SetFieldSize();
-
-        gameField = new Figure[fieldSize, fieldSize];
-        Vector3Int tilePos = new Vector3Int(0, 0, 0);
-
-        for (int i = 0; i < fieldSize; i++)
-        {
-            for (int j = 0; j < fieldSize; j++)
-            {
-                gameField[i, j] = Figure.empty;
-                general.backgroundTilemap.SetTile(tilePos, general.backgroundTile);
-
-                tilePos += Vector3Int.right;
-            }
-
-            tilePos.x = 0;
-            tilePos += Vector3Int.up;
-        }
-
-        // Focus camera on field;
-        float fieldCenter = ((float) fieldSize) / 2;
-        const float cameraScaleCooficient = 0.66f;
-
-        Vector3 cameraPosition = new Vector3(fieldCenter, fieldCenter, -10);
-        mainCamera.transform.position = cameraPosition;
-
-        mainCamera.orthographicSize =  fieldSize * cameraScaleCooficient;
-    }
 
     public IEnumerator ShowGameOverScreen(Figure winnerFigure)
     {
@@ -123,15 +91,7 @@ public class MainMenu : MonoBehaviour
 
         yield return new WaitForSeconds(resultScreenDuration);
 
-        for (int i = 0; i < fieldSize; i++)
-        {
-            for (int j = 0; j < fieldSize; j++)
-            {
-                Vector3Int tilePosition = new Vector3Int(i, j, 0);
-                general.figureTileMap.SetTile(tilePosition, null);
-                general.backgroundTilemap.SetTile(tilePosition, null);
-            }
-        }
+        general.deleteField();
 
         resultScreen.SetActive(false);
         menuScreen.SetActive(true);
@@ -169,11 +129,15 @@ public class MainMenu : MonoBehaviour
     {
         Mode3DToggle.isOn = !toggle.isOn;
         gameMode2D = toggle.isOn;
+
+        general.SetMode();
     }
     public void Toggle3DMode(Toggle toggle)
     {
         Mode2DToggle.isOn = !toggle.isOn;
         gameMode2D = !toggle.isOn;
+
+        general.SetMode();
     }
 
 }
