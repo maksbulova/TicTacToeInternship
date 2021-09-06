@@ -3,12 +3,14 @@ using UnityEngine.Tilemaps;
 
 public class General : MonoBehaviour
 {
+    public Grid grid;
     public Tilemap figureTileMap, backgroundTilemap;
     public TileBase circleTile, crossTile, backgroundTile;
 
     public GameObject circle3DModel, cross3DModel, background3DModel;
 
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform modelsParent;
 
     public static int fieldSize = 3;
     public static bool gameMode2D = true;
@@ -16,6 +18,7 @@ public class General : MonoBehaviour
 
     private const float fieldZPosition = 0;
     private const float figuresZPosition = -0.5f;
+    readonly Vector3 modelPivotOffset = new Vector3(-0.5f, -0.5f);
 
     public enum Figure { cross, circle, empty }
     public static Figure[,] gameField;
@@ -75,7 +78,7 @@ public class General : MonoBehaviour
         {
             Vector3 objectPostion = new Vector3(figurePosition.x, figurePosition.y, figuresZPosition);
             Quaternion objectRotation = Quaternion.Euler(-90, 0, 0);
-            GameObject newFigure = Instantiate(newObject, objectPostion, objectRotation);
+            GameObject newFigure = Instantiate(newObject, objectPostion, objectRotation, modelsParent);
             newFigure.tag = "Figure";
         }
         else
@@ -232,7 +235,7 @@ public class General : MonoBehaviour
                 gameField[i, j] = Figure.empty;
 
                 Quaternion objectRotation = Quaternion.Euler(-90, 0, 0);
-                Instantiate(background3DModel, objectPosition, objectRotation);
+                Instantiate(background3DModel, objectPosition, objectRotation, modelsParent);
 
                 objectPosition += Vector3.right;
             }
@@ -249,7 +252,8 @@ public class General : MonoBehaviour
         float fieldCenter = ((float)fieldSize) / 2;
         const float cameraScaleCooficient = 0.66f;
 
-        Vector3 cameraPosition = new Vector3(fieldCenter, fieldCenter, -10);
+        Vector3 offset = gameMode2D ? Vector3.zero : modelPivotOffset;
+        Vector3 cameraPosition = new Vector3(fieldCenter, fieldCenter, -10) + offset;
         mainCamera.transform.position = cameraPosition;
 
         mainCamera.orthographicSize = fieldSize * cameraScaleCooficient;
@@ -286,7 +290,6 @@ public class General : MonoBehaviour
 
                 foreach (RaycastHit hit in hits)
                 {
-                    Debug.Log(hit.collider.gameObject.name);
                     Destroy(hit.collider.gameObject);
                 }
             }
@@ -301,12 +304,16 @@ public class General : MonoBehaviour
             setFigure = SetFigure2D;
             generateField = GenerateField2D;
             deleteField = DeleteField2D;
+
+            grid.transform.position = Vector3.zero;
         }
         else
         {
             setFigure = SetFigure3D;
             generateField = GenerateField3D;
             deleteField = DeleteField3D;
+
+            grid.transform.position = modelPivotOffset;
         }
     }
 }

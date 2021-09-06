@@ -17,15 +17,19 @@ public class HumanPlayer : Player
                 Vector3Int clickPosition = general.figureTileMap.WorldToCell(pos);
                 Vector2Int cellPosition = new Vector2Int(clickPosition.x, clickPosition.y);
 
-                Figure tileOnClick = CheckFigure(cellPosition);
-
-                if (tileOnClick == Figure.empty &&
-                   (cellPosition.x >= 0 && cellPosition.x <= fieldSize) &&
-                   (cellPosition.y >= 0 && cellPosition.y <= fieldSize))
+                if ((cellPosition.x >= 0 && cellPosition.x < fieldSize) &&
+                   (cellPosition.y >= 0 && cellPosition.y < fieldSize))
                 {
-                    general.setFigure(playerFigure, cellPosition);
-                    turnManager.MakeNextTurn();
+                    Figure tileOnClick = CheckFigure(cellPosition);
+
+                    if (tileOnClick == Figure.empty)
+                    {
+                        general.setFigure(playerFigure, cellPosition);
+                        turnManager.MakeNextTurn();
+                    }
+
                 }
+
             }
 
             yield return null;
